@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{background:var(--c-page,#f4efe4);color:var(--c-text,#2c231b);font-family:'Archivo',system-ui,sans-serif}
+input,textarea,select,button{font-family:inherit}
+input:focus-visible,textarea:focus-visible,select:focus-visible{border-color:var(--c-accent,#9e3428)!important;box-shadow:0 0 0 2px var(--c-glow2,rgba(158,52,40,.26))}
+input::placeholder,textarea::placeholder{color:var(--c-place,#b4a894)}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+input[type=number]{-moz-appearance:textfield}
+textarea{resize:vertical}
+::-webkit-scrollbar{width:11px;height:11px}
+::-webkit-scrollbar-thumb{background:var(--c-inset-bd,#dccfb8);border-radius:6px;border:2px solid var(--c-page,#f4efe4)}
+::-webkit-scrollbar-track{background:transparent}
+a{color:var(--c-accent,#9e3428);text-decoration:none}a:hover{color:var(--c-accent-2,#9e3428)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+</style>
+</helmet>
+<div ref="{{ rootRef }}" style="min-height:100vh;background:radial-gradient(1200px 600px at 50% -10%,var(--c-page2,#efe7d7) 0%,var(--c-page,#f4efe4) 55%)">
+
+<header style="position:sticky;top:0;z-index:20;backdrop-filter:blur(10px);background:var(--c-header-bg,rgba(250,246,238,.85));border-bottom:1px solid var(--c-border,#e6ddca)">
+  <div style="max-width:1460px;margin:0 auto;padding:14px 22px;display:flex;align-items:center;gap:18px;flex-wrap:wrap">
+    <div style="display:flex;align-items:center;gap:13px;flex:1;min-width:220px">
+      <div style="width:34px;height:34px;border:1.5px solid var(--c-accent,#9e3428);border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none;box-shadow:0 0 18px var(--c-glow,rgba(158,52,40,.28))">
+        <div style="width:11px;height:11px;background:var(--c-accent,#9e3428);border-radius:50%;box-shadow:0 0 10px var(--c-accent,#9e3428)"></div>
+      </div>
+      <div style="line-height:1.15">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:23px;font-weight:700;letter-spacing:.02em">Ficha do Investigador</div>
+        <div style="font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--c-muted2,#8a8072);font-weight:600">Call of Cthulhu · 7ª Edição · Era Moderna</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--c-muted3,#978c7c);margin-right:4px" title="Suas alterações são salvas automaticamente neste navegador">
+        <span style="width:7px;height:7px;border-radius:50%;background:var(--c-accent,#9e3428);box-shadow:0 0 8px var(--c-accent,#9e3428)"></span>Salvo no navegador
+      </div>
+      <button onClick="{{ toggleTheme }}" title="Alternar tema claro/escuro" style-hover="background:var(--c-soft-bd,#e9e1ce);border-color:var(--c-accent,#9e3428)" style="display:inline-flex;align-items:center;gap:7px;background:var(--c-reset-bg,#f3eee2);border:1px solid var(--c-reset-bd,#ddd0bd);color:var(--c-text,#2c231b);padding:9px 13px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;transition:.15s">{{ themeLabel }}</button>
+      <button onClick="{{ exportJSON }}" style-hover="background:var(--c-accent-hov,#f3ddd6);border-color:var(--c-accent,#9e3428)" style="display:inline-flex;align-items:center;gap:7px;background:var(--c-accent-btnbg,#f8e9e4);border:1px solid var(--c-accent-btnbd,#e4c3bb);color:var(--c-accent-btnt,#9e3428);padding:9px 15px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;transition:.15s">↧ Exportar JSON</button>
+      <label style-hover="background:var(--c-soft-bd,#e9e1ce);border-color:var(--c-accent,#9e3428)" style="display:inline-flex;align-items:center;gap:7px;background:var(--c-reset-bg,#f3eee2);border:1px solid var(--c-reset-bd,#ddd0bd);color:var(--c-reset-t,#8a6f68);padding:9px 15px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;transition:.15s">↥ Importar<input type="file" accept="application/json,.json" onChange="{{ importJSON }}" style="display:none"></label>
+      <button onClick="{{ resetSheet }}" style-hover="background:var(--c-reset-hbg,#f0e1db);border-color:var(--c-reset-hbd,#d4a99f);color:var(--c-reset-ht,#9e3428)" style="display:inline-flex;align-items:center;gap:7px;background:var(--c-reset-bg,#f3eee2);border:1px solid var(--c-reset-bd,#ddd0bd);color:var(--c-reset-t,#8a6f68);padding:9px 15px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;transition:.15s">Nova ficha</button>
+    </div>
+  </div>
+</header>
+
+<main style="max-width:1460px;margin:0 auto;padding:22px 22px 80px;display:flex;flex-direction:column;gap:16px">
+
+  <!-- IDENTIDADE + RETRATO + CARACTERÍSTICAS -->
+  <section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:16px;align-items:start">
+
+    <div style="background:var(--c-panel,#fdfaf4);border:1px solid var(--c-border,#e6ddca);border-radius:12px;padding:18px">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+        <h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600">Investigador</h2>
+        <div style="flex:1;height:1px;background:linear-gradient(90deg,var(--c-rule,rgba(158,52,40,.55)),transparent)"></div>
+      </div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap">
+        <div style="flex:none">
+          <label style="position:relative;display:flex;align-items:center;justify-content:center;width:128px;height:158px;border:1px dashed var(--c-dash,#ccc0a8);border-radius:10px;overflow:hidden;cursor:pointer;background:var(--c-inset,#f3eee2);text-align:center" style-hover="border-color:var(--c-accent,#9e3428)">
+            {{ portraitImg }}
+            <sc-if value="{{ notPortrait }}" hint-placeholder-val="{{ true }}"><span style="font-size:11px;color:var(--c-muted3,#978c7c);padding:10px;line-height:1.5">▤<br>Enviar<br>retrato</span></sc-if>
+            <input type="file" accept="image/*" onChange="{{ onPortrait }}" style="display:none">
+          </label>
+          <sc-if value="{{ hasPortrait }}" hint-placeholder-val="{{ false }}"><button onClick="{{ clearPortrait }}" style="width:128px;margin-top:6px;background:var(--c-reset-bg,#f3eee2);border:1px solid var(--c-reset-bd,#ddd0bd);color:var(--c-reset-t,#8a6f68);font-size:11px;padding:5px;border-radius:6px;cursor:pointer">Remover</button></sc-if>
+        </div>
+        <div style="flex:1;min-width:170px;display:flex;flex-direction:column;gap:11px">
+          <div><label style="display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--c-muted,#786e60);margin-bottom:5px;font-weight:600">Nome</label><input value="{{ d.meta.nome }}" data-path="meta.nome" onChange="{{ onField }}" placeholder="Nome do investigador" style="width:100%;background:var(--c-inset,#f3eee2);border:1px solid var(--c-inset-bd,#dccfb8);border-radius:7px;color:var(--c-text,#2c231b);padding:9px 11px;font-size:15px;font-weight:600"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div><label style="display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--c-muted,#786e60);margin-bottom:5px;font-weight:600">Jogador</label><input value="{{ d.meta.jogador }}" data-path="meta.jogador" onChange="{{ onField }}" style="width:100%;background:var(--c-inset,#f3eee2);border:1px solid var(--c-inset-bd,#dccfb8);border-radius:7px;color:var(--c-text,#2c231b);padding:8px 10px;font-size:13px"></div>
+            <div><label style="display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--c-muted,#786e60);margin-bottom:5px;font-weight:600">Ocupação</label><input value="{{ d.meta.ocupacao }}" data-path="meta.ocupacao" onChange="{{ onField }}" style="width:100%;background:var(--c-inset,#f3eee2);border:1px solid var(--c-inset-bd,#dccfb8);border-radius:7px;color:var(--c-text,#2c231b);padding:8px 10px;font-size:13px"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div><label style="display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--c-muted,#786e60);margin-bottom:5px;font-weight:600">Idade</label><input value="{{ d.meta.idade }}" data-path="meta.idade" onChange="{{ onField }}" inputmode="numeric" style="width:100%;background:var(--c-inset,#f3eee2);border:1px solid var(--c-inset-bd,#dccfb8);border-radius:7px;color:var(--c-text,#2c231b);padding:8px 10px;font-size:13px"></div>
+            <div><label style="display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--c-muted,#786e60);margin-bottom:5px;font-weight:600">Sexo</label><input value="{{ d.meta.sexo }}" data-path="meta.sexo" onChange="{{ onField }}" style="width:100%;background:var(--c-inset,#f3eee2);border:1px solid var(--c-inset-bd,#dccfb8);border-radius:7px;color:var(--c-text,#2c231b);padding:8px 10px;font-size:13px"></div>
+          </div>
+          <div><label style="display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--c-muted,#786e60);margin-bottom:5px;font-weight:600">Residência</label><input value="{{ d.meta.residencia }}" data-path="meta.residencia" onChange="{{ onField }}" style="width:100%;background:var(--c-inset,#f3eee2);border:1px solid var(--c-inset-bd,#dccfb8);border-radius:7px;color:var(--c-text,#2c231b);padding:8px 10px;font-size:13px"></div>
+          <div><label style="display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--c-muted,#786e60);margin-bottom:5px;font-weight:600">Cidade Natal</label><input value="{{ d.meta.cidadeNatal }}" data-path="meta.cidadeNatal" onChange="{{ onField }}" style="width:100%;background:var(--c-inset,#f3eee2);border:1px solid var(--c-inset-bd,#dccfb8);border-radius:7px;color:var(--c-text,#2c231b);padding:8px 10px;font-size:13px"></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:var(--c-panel,#fdfaf4);border:1px solid var(--c-border,#e6ddca);border-radius:12px;padding:18px">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">
+        <h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600">Características</h2>
+        <div style="flex:1;height:1px;background:linear-gradient(90deg,var(--c-rule,rgba(158,52,40,.55)),transparent)"></div>
+      </div>
+      <div style="font-size:10.5px;color:var(--c-muted3,#978c7c);margin-bottom:13px">Valor · <span style="color:var(--c-accent-3,#9e3428)">metade</span> (Difícil) · <span style="color:var(--c-accent-3,#9e3428)">quinto</span> (Extremo) — calculados automaticamente</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:9px">
+        <sc-for list="{{ attrRows }}" as="a" hint-placeholder-count="8">
+          <div style="background:var(--c-inset,#f3eee2);border:1px solid var(--c-border,#e6ddca);border-radius:9px;padding:9px 6px;text-align:center">
+            <div style="font-size:10px;letter-spacing:.1em;color:var(--c-muted,#786e60);font-weight:700">{{ a.abbr }}</div>
+            <input value="{{ a.raw }}" placeholder="—" inputmode="numeric" data-path="{{ a.path }}" onChange="{{ onField }}" style="width:100%;background:transparent;border:none;color:var(--c-text,#2c231b);text-align:center;font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700;padding:2px 0;margin:1px 0">
+            <div style="display:flex;justify-content:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--c-muted2,#8a8072);border-top:1px solid var(--c-soft-bd,#e9e1ce);padding-top:5px">
+              <span>{{ a.half }}</span><span style="color:var(--c-dash,#ccc0a8)">|</span><span>{{ a.fifth }}</span>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:12px">
+        <div style="background:var(--c-inset,#f3eee2);border:1px solid var(--c-border,#e6ddca);border-radius:9px;padding:8px;text-align:center"><div style="font-size:9.5px;letter-spacing:.1em;color:var(--c-muted,#786e60);font-weight:700;text-transform:uppercase">Mov.</div><div style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--c-accent,#9e3428)">{{ mov }}</div></div>
+        <div style="background:var(--c-inset,#f3eee2);border:1px solid var(--c-border,#e6ddca);border-radius:9px;padding:8px;text-align:center"><div style="font-size:9.5px;letter-spacing:.1em;color:var(--c-muted,#786e60);font-weight:700;text-transform:uppercase">Bônus Dano</div><div style="font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:700;color:var(--c-accent,#9e3428);padding-top:2px">{{ dbText }}</div></div>
+        <div style="background:var(--c-inset,#f3eee2);border:1px solid var(--c-border,#e6ddca);border-radius:9px;padding:8px;text-align:center"><div style="font-size:9.5px;letter-spacing:.1em;color:var(--c-muted,#786e60);font-weight:700;text-transform:uppercase">Porte</div><div style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--c-accent,#9e3428)">{{ buildDisp }}</div></div>
+        <div style="background:var(--c-inset,#f3eee2);border:1px solid var(--c-border,#e6ddca);border-radius:9px;padding:8px;text-align:center"><div style="font-size:9.5px;letter-spacing:.1em;color:var(--c-muted,#786e60);font-weight:700;text-transform:uppercase">Esquiva</div><div style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--c-accent,#9e3428)">{{ dodge }}</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATUS -->
+  <section style="background:var(--c-panel,#fdfaf4);border:1px solid var(--c-border,#e6ddca);border-radius:12px;padding:18px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+      <h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600">Condição</h2>
+      <div style="flex:1;height:1px;background:linear-gradient(90deg,var(--c-rule,rgba(158,52,40,.55)),transparent)"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px">
+
+      <div style="background:var(--c-hp-bg,#fceeea);border:1px solid var(--c-hp-bd,#e8c8c0);border-radius:10px;padding:13px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px"><span style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--c-hp-t,#b0473a);font-weight:700">Pontos de Vida</span><span style="font-size:11px;color:var(--c-muted,#786e60);font-family:'JetBrains Mono',monospace">máx {{ pv.max }}</span></div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <button data-path="status.pvAtual" data-cur="{{ pv.cur }}" data-delta="-1" data-max="{{ pv.max }}" onClick="{{ step }}" style="width:32px;height:36px;background:transparent;border:1px solid var(--c-hp-btnbd,#e4c3bb);color:var(--c-hp-t,#b0473a);border-radius:8px;font-size:18px;cursor:pointer;flex:none">−</button>
+          <input value="{{ d.status.pvAtual }}" placeholder="{{ pv.max }}" inputmode="numeric" data-path="status.pvAtual" onChange="{{ onField }}" style="flex:1;min-width:0;background:var(--c-inset,#f3eee2);border:1px solid var(--c-hp-bd,#e8c8c0);border-radius:8px;color:var(--c-hp-num,#7c281e);text-align:center;font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;padding:5px 0">
+          <button data-path="status.pvAtual" data-cur="{{ pv.cur }}" data-delta="1" data-max="{{ pv.max }}" onClick="{{ step }}" style="width:32px;height:36px;background:transparent;border:1px solid var(--c-hp-btnbd,#e4c3bb);color:var(--c-hp-t,#b0473a);border-radius:8px;font-size:18px;cursor:pointer;flex:none">+</button>
+        </div>
+        <div style="display:flex;gap:14px;margin-top:10px;font-size:11px;color:var(--c-cklbl,#8a7268)">
+          <label style="display:flex;align-items:center;gap:5px;cursor:pointer"><input type="checkbox" checked="{{ d.states.grave }}" data-path="states.grave" onChange="{{ onToggle }}" style="accent-color:#cf5a49;width:14px;height:14px">Fer. grave</label>
+          <label style="display:flex;align-items:center;gap:5px;cursor:pointer"><input type="checkbox" checked="{{ d.states.morrendo }}" data-path="states.morrendo" onChange="{{ onToggle }}" style="accent-color:#cf5a49;width:14px;height:14px">Morrendo</label>
+        </div>
+      </div>
+
+      <div style="background:var(--c-soft,#f8f3ea);border:1px solid var(--c-soft-bd2,#e2d0c2);border-radius:10px;padding:13px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px"><span style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--c-accent-3,#9e3428);font-weight:700">Sanidade</span><span style="font-size:11px;color:var(--c-muted,#786e60);font-family:'JetBrains Mono',monospace">máx {{ san.max }} · ini {{ san.ini }}</span></div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <button data-path="status.sanAtual" data-cur="{{ san.cur }}" data-delta="-1" data-max="{{ san.max }}" onClick="{{ step }}" style="width:32px;height:36px;background:transparent;border:1px solid var(--c-accent-btnbd,#e4c3bb);color:var(--c-accent-3,#9e3428);border-radius:8px;font-size:18px;cursor:pointer;flex:none">−</button>
+          <input value="{{ d.status.sanAtual }}" placeholder="{{ san.ini }}" inputmode="numeric" data-path="status.sanAtual" onChange="{{ onField }}" style="flex:1;min-width:0;background:var(--c-inset,#f3eee2);border:1px solid var(--c-accent-btnbd,#e4c3bb);border-radius:8px;color:var(--c-accent-num,#7a271d);text-align:center;font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;padding:5px 0">
+          <button data-path="status.sanAtual" data-cur="{{ san.cur }}" data-delta="1" data-max="{{ san.max }}" onClick="{{ step }}" style="width:32px;height:36px;background:transparent;border:1px solid var(--c-accent-btnbd,#e4c3bb);color:var(--c-accent-3,#9e3428);border-radius:8px;font-size:18px;cursor:pointer;flex:none">+</button>
+        </div>
+        <div style="display:flex;gap:12px;margin-top:10px;font-size:11px;color:var(--c-cklbl,#8a7268)">
+          <label style="display:flex;align-items:center;gap:5px;cursor:pointer"><input type="checkbox" checked="{{ d.states.tempInsano }}" data-path="states.tempInsano" onChange="{{ onToggle }}" style="accent-color:var(--c-accent,#9e3428);width:14px;height:14px">Insano temp.</label>
+          <label style="display:flex;align-items:center;gap:5px;cursor:pointer"><input type="checkbox" checked="{{ d.states.indefInsano }}" data-path="states.indefInsano" onChange="{{ onToggle }}" style="accent-color:var(--c-accent,#9e3428);width:14px;height:14px">Indefinido</label>
+        </div>
+      </div>
+
+      <div style="background:var(--c-pm-bg,#f6f1e7);border:1px solid var(--c-pm-bd,#dacdb4);border-radius:10px;padding:13px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px"><span style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--c-pm-label,#8a8072);font-weight:700">Pontos de Magia</span><span style="font-size:11px;color:var(--c-muted,#786e60);font-family:'JetBrains Mono',monospace">máx {{ pm.max }}</span></div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <button data-path="status.pmAtual" data-cur="{{ pm.cur }}" data-delta="-1" data-max="{{ pm.max }}" onClick="{{ step }}" style="width:32px;height:36px;background:transparent;border:1px solid var(--c-pm-bd,#dacdb4);color:var(--c-pm-label,#8a8072);border-radius:8px;font-size:18px;cursor:pointer;flex:none">−</button>
+          <input value="{{ d.status.pmAtual }}" placeholder="{{ pm.max }}" inputmode="numeric" data-path="status.pmAtual" onChange="{{ onField }}" style="flex:1;min-width:0;background:var(--c-inset,#f3eee2);border:1px solid var(--c-pm-bd,#dacdb4);border-radius:8px;color:var(--c-text,#2c231b);text-align:center;font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;padding:5px 0">
+          <button data-path="status.pmAtual" data-cur="{{ pm.cur }}" data-delta="1" data-max="{{ pm.max }}" onClick="{{ step }}" style="width:32px;height:36px;background:transparent;border:1px solid var(--c-pm-bd,#dacdb4);color:var(--c-pm-label,#8a8072);border-radius:8px;font-size:18px;cursor:pointer;flex:none">+</button>
+        </div>
+        <div style="margin-top:10px;font-size:11px;color:var(--c-muted3,#978c7c)">POD ÷ 5</div>
+      </div>
+
+      <div style="background:var(--c-inset,#f3eee2);border:1px solid var(--c-inset-bd,#dccfb8);border-radius:10px;padding:13px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px"><span style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--c-gold,#977629);font-weight:700">Sorte</span><span style="font-size:11px;color:var(--c-muted,#786e60);font-family:'JetBrains Mono',monospace">0–99</span></div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <button data-path="status.sorte" data-cur="{{ sorteCur }}" data-delta="-1" data-max="99" onClick="{{ step }}" style="width:32px;height:36px;background:transparent;border:1px solid var(--c-gold-bd,#e2d5ae);color:var(--c-gold,#977629);border-radius:8px;font-size:18px;cursor:pointer;flex:none">−</button>
+          <input value="{{ d.status.sorte }}" placeholder="—" inputmode="numeric" data-path="status.sorte" onChange="{{ onField }}" style="flex:1;min-width:0;background:var(--c-inset,#f3eee2);border:1px solid var(--c-gold-bd,#e2d5ae);border-radius:8px;color:var(--c-gold-num,#6b5420);text-align:center;font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;padding:5px 0">
+          <button data-path="status.sorte" data-cur="{{ sorteCur }}" data-delta="1" data-max="99" onClick="{{ step }}" style="width:32px;height:36px;background:transparent;border:1px solid var(--c-gold-bd,#e2d5ae);color:var(--c-gold,#977629);border-radius:8px;font-size:18px;cursor:pointer;flex:none">+</button>
+        </div>
+        <div style="margin-top:10px;font-size:11px;color:var(--c-muted3,#978c7c)">Mit. Cthulhu: <span style="color:var(--c-text,#2c231b);font-family:'JetBrains Mono',monospace">{{ mythos }}</span> → reduz Sanidade máx.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PERÍCIAS -->
+  <section style="background:var(--c-panel,#fdfaf4);border:1px solid var(--c-border,#e6ddca);border-radius:12px;padding:18px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap">
+      <h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600">Perícias</h2>
+      <div style="flex:1;height:1px;background:linear-gradient(90deg,var(--c-rule,rgba(158,52,40,.55)),transparent);min-width:30px"></div>
+      <button onClick="{{ togglePoints }}" style-hover="border-color:var(--c-accent,#9e3428);color:var(--c-accent-3,#9e3428)" style="background:transparent;border:1px solid var(--c-inset-bd,#dccfb8);color:var(--c-muted,#786e60);padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:.15s">{{ pointsLabel }}</button>
+    </div>
+    <div style="font-size:11.5px;color:var(--c-muted2,#8a8072);margin-bottom:14px;line-height:1.7;display:flex;gap:8px 18px;flex-wrap:wrap;align-items:center">
+      <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--c-accent,#9e3428);vertical-align:middle;margin-right:5px"></span>bolinha = perícia de <b style="color:var(--c-text,#2c231b)">ocupação</b></span>
+      <span><b style="color:var(--c-text,#2c231b)">Valor</b> = % atual da perícia</span>
+      <span style="color:var(--c-accent-3,#9e3428)"><b>½</b> metade → sucesso <b>Difícil</b></span>
+      <span style="color:var(--c-accent-3,#9e3428)"><b>⅕</b> um quinto → sucesso <b>Extremo</b></span>
+      <span style="color:var(--c-muted3,#978c7c)">⠿ arraste para reordenar</span>
+    </div>
+
+    <sc-if value="{{ showPoints }}" hint-placeholder-val="{{ true }}">
+    <!-- Contador de pontos -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-bottom:16px">
+      <div style="background:var(--c-soft,#f8f3ea);border:1px solid var(--c-soft-bd2,#e2d0c2);border-radius:10px;padding:12px 14px">
+        <div style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--c-accent-3,#9e3428);font-weight:700;margin-bottom:8px">Pontos de Ocupação</div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <input value="{{ d.points.occ }}" placeholder="{{ points.eduHint }}" inputmode="numeric" data-path="points.occ" onChange="{{ onField }}" style="width:74px;background:var(--c-inset,#f3eee2);border:1px solid var(--c-accent-btnbd,#e4c3bb);border-radius:7px;color:var(--c-accent-num,#7a271d);text-align:center;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;padding:7px 0">
+          <div style="font-size:12px;color:var(--c-muted,#786e60);line-height:1.5">gastos <b style="color:var(--c-text,#2c231b);font-family:'JetBrains Mono',monospace">{{ points.occSpent }}</b><br>restam <b style="color:{{ points.occRemColor }};font-family:'JetBrains Mono',monospace">{{ points.occRem }}</b></div>
+        </div>
+        <div style="font-size:10.5px;color:var(--c-faint,#a89d8b);margin-top:7px">sugestão: EDU × 4</div>
+      </div>
+      <div style="background:var(--c-inset,#f3eee2);border:1px solid var(--c-inset-bd,#dccfb8);border-radius:10px;padding:12px 14px">
+        <div style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--c-gold,#977629);font-weight:700;margin-bottom:8px">Pontos de Interesse Pessoal</div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <input value="{{ d.points.int }}" placeholder="{{ points.intHint }}" inputmode="numeric" data-path="points.int" onChange="{{ onField }}" style="width:74px;background:var(--c-inset,#f3eee2);border:1px solid var(--c-gold-bd,#e2d5ae);border-radius:7px;color:var(--c-gold-num,#6b5420);text-align:center;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;padding:7px 0">
+          <div style="font-size:12px;color:var(--c-muted,#786e60);line-height:1.5">gastos <b style="color:var(--c-text,#2c231b);font-family:'JetBrains Mono',monospace">{{ points.intSpent }}</b><br>restam <b style="color:{{ points.intRemColor }};font-family:'JetBrains Mono',monospace">{{ points.intRem }}</b></div>
+        </div>
+        <div style="font-size:10.5px;color:var(--c-faint,#a89d8b);margin-top:7px">sugestão: INT × 2 · perícias não marcadas como ocupação</div>
+      </div>
+    </div>
+    </sc-if>
+
+    <div style="display:grid;grid-template-columns:16px 20px 1fr 52px 30px 30px 16px;gap:7px;align-items:end;padding:2px 9px 6px;font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--c-muted,#786e60);font-weight:700">
+      <div></div><div></div><div>Perícia</div>
+      <div style="text-align:center">Valor</div>
+      <div style="text-align:center;color:var(--c-accent-3,#9e3428)">½ Dif</div>
+      <div style="text-align:center;color:var(--c-accent-3,#9e3428)">⅕ Ext</div>
+      <div></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:7px">
+      <sc-for list="{{ skillRows }}" as="s" hint-placeholder-count="24">
+        <div data-idx="{{ s.i }}" onDragOver="{{ onSkillDragOver }}" onDrop="{{ onSkillDrop }}" style="display:grid;grid-template-columns:16px 20px 1fr 52px 30px 30px 16px;align-items:center;gap:7px;padding:5px 9px;border-radius:8px;background:var(--c-soft,#f8f3ea);border:1px solid var(--c-soft-bd,#e9e1ce)">
+          <div draggable="true" data-idx="{{ s.i }}" onDragStart="{{ onSkillDragStart }}" title="Arraste para reordenar" style="cursor:grab;color:var(--c-muted2,#8a8072);font-size:14px;line-height:1;text-align:center;user-select:none">⠿</div>
+          <button data-idx="{{ s.i }}" onClick="{{ toggleOcc }}" title="Marcar como perícia de ocupação" style="width:14px;height:14px;border-radius:50%;border:1.5px solid {{ s.occBorder }};background:{{ s.occDot }};cursor:pointer;padding:0;flex:none"></button>
+          <input value="{{ s.nome }}" data-path="skills.{{ s.i }}.nome" onChange="{{ onField }}" spellcheck="false" placeholder="Nova perícia" style="width:100%;background:transparent;border:none;color:var(--c-text,#2c231b);font-size:13px;padding:3px 2px;font-weight:500;outline:none;min-width:0">
+          <input value="{{ s.valorRaw }}" placeholder="{{ s.base }}" inputmode="numeric" data-path="skills.{{ s.i }}.valor" onChange="{{ onField }}" style="width:100%;background:var(--c-inset,#f3eee2);border:1px solid var(--c-inset-bd,#dccfb8);border-radius:6px;color:var(--c-text,#2c231b);text-align:center;font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;padding:5px 0">
+          <div style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--c-muted2,#8a8072)">{{ s.half }}</div>
+          <div style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--c-muted2,#8a8072)">{{ s.fifth }}</div>
+          <div style="text-align:center">
+            <sc-if value="{{ s.custom }}" hint-placeholder-val="{{ false }}"><button data-idx="{{ s.i }}" onClick="{{ delSkill }}" title="Remover" style="background:none;border:none;color:var(--c-hp-t,#b0473a);cursor:pointer;font-size:15px;line-height:1;padding:0">×</button></sc-if>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+    <button onClick="{{ addSkill }}" style-hover="background:var(--c-accent-hov,#f3ddd6);border-color:var(--c-accent,#9e3428);color:var(--c-accent-btnt,#9e3428)" style="margin-top:12px;background:var(--c-accent-btnbg,#f8e9e4);border:1px dashed var(--c-accent-btnbd,#e4c3bb);color:var(--c-accent-3,#9e3428);padding:10px 16px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;transition:.15s">+ Adicionar perícia</button>
+  </section>
+
+  <!-- COMBATE + BENS -->
+  <section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px;align-items:start">
+    <div style="background:var(--c-panel,#fdfaf4);border:1px solid var(--c-border,#e6ddca);border-radius:12px;padding:18px;grid-column:1/-1">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+        <h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600">Armas & Combate</h2>
+        <div style="flex:1;height:1px;background:linear-gradient(90deg,var(--c-rule,rgba(158,52,40,.55)),transparent)"></div>
+      </div>
+      <div style="overflow-x:auto">
+        <div style="min-width:720px">
+          <div style="display:grid;grid-template-columns:1.6fr .8fr 1fr 1fr .7fr 1fr .7fr 20px;gap:8px;padding:0 4px 8px;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--c-muted,#786e60);font-weight:700">
+            <div>Arma</div><div>Perícia %</div><div>Dano</div><div>Alcance</div><div>Ataq.</div><div>Munição</div><div>Falha</div><div></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <sc-for list="{{ weaponRows }}" as="w" hint-placeholder-count="2">
+              <div style="display:grid;grid-template-columns:1.6fr .8fr 1fr 1fr .7fr 1fr .7fr 20px;gap:8px;align-items:center">
+                <input value="{{ w.nome }}" data-path="weapons.{{ w.i }}.nome" onChange="{{ onField }}" placeholder="ex: Faca / Glock 17" style="background:var(--c-inset,#f3eee2);border:1px solid var(--c-inset-bd,#dccfb8);border-radius:6px;color:var(--c-text,#2c231b);padding:8px 9px;font-size:13px;min-width:0">
+                <input value="{{ w.hab }}" data-path="weapons.{{ w.i }}.hab" onChange="{{ onField }}" style="background:var(--c-inset,#f3eee2);border:1px solid var(--c-inset-bd,#dccfb8);border-radius:6px;color:var(--c-text,#2c231b);padding:8px 6px;font-size:13px;text-align:center;min-width:0">
+                <input value="{{ w.dano }}" data-path="weapons.{{ w.i }}.dano" onChange="{{ onField }}" placeholder="1d3+BD" style="background:var(--c-inset,#f3eee2);border:1px solid var(--c-inset-bd,#dccfb8);border-radius:6px;color:var(--c-text,#2c231b);padding:8px 6px;font-size:13px;text-align:center;min-width:0">
+                <input value="{{ w.alcance }}" data-path="weapons.{{ w.i }}.alcance" onChange="{{ onField }}" style="background:var(--c-inset,#f3eee2);border:1px solid var(--c-inset-bd,#dccfb8);border-radius:6px;color:var(--c-text,#2c231b);padding:8px 6px;font-size:13px;text-align:center;min-width:0">
+                <input value="{{ w.ataques }}" data-path="weapons.{{ w.i }}.ataques" onChange="{{ onField }}" style="background:var(--c-inset,#f3eee2);border:1px solid var(--c-inset-bd,#dccfb8);border-radius:6px;color:var(--c-text,#2c231b);padding:8px 6px;font-size:13px;text-align:center;min-width:0">
+                <input value="{{ w.municao }}" data-path="weapons.{{ w.i }}.municao" onChange="{{ onField }}" style="background:var(--c-inset,#f3eee2);border:1px solid var(--c-inset-bd,#dccfb8);border-radius:6px;color:var(--c-text,#2c231b);padding:8px 6px;font-size:13px;text-align:center;min-width:0">
+                <input value="{{ w.malf }}" data-path="weapons.{{ w.i }}.malf" onChange="{{ onField }}" style="background:var(--c-inset,#f3eee2);border:1px solid var(--c-inset-bd,#dccfb8);border-radius:6px;color:var(--c-text,#2c231b);padding:8px 6px;font-size:13px;text-align:center;min-width:0">
+                <button data-idx="{{ w.i }}" onClick="{{ delWeapon }}" title="Remover" style="background:none;border:none;color:var(--c-hp-t,#b0473a);cursor:pointer;font-size:16px;padding:0">×</button>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+      <button onClick="{{ addWeapon }}" style-hover="background:var(--c-accent-hov,#f3ddd6);border-color:var(--c-accent,#9e3428);color:var(--c-accent-btnt,#9e3428)" style="margin-top:12px;background:var(--c-accent-btnbg,#f8e9e4);border:1px dashed var(--c-accent-btnbd,#e4c3bb);color:var(--c-accent-3,#9e3428);padding:9px 15px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;transition:.15s">+ Adicionar arma</button>
+    </div>
+
+    <div style="background:var(--c-panel,#fdfaf4);border:1px solid var(--c-border,#e6ddca);border-radius:12px;padding:18px">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+        <h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600">Bens & Renda</h2>
+        <div style="flex:1;height:1px;background:linear-gradient(90deg,var(--c-rule,rgba(158,52,40,.55)),transparent)"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div style="background:var(--c-inset,#f3eee2);border:1px solid var(--c-border,#e6ddca);border-radius:9px;padding:10px 12px"><div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--c-muted,#786e60);font-weight:600;margin-bottom:4px">Nível de Crédito</div><div style="font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;color:var(--c-gold,#977629)">{{ credito }}</div><div style="font-size:10px;color:var(--c-faint,#a89d8b)">= perícia Crédito</div></div>
+        <div><label style="display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--c-muted,#786e60);margin-bottom:5px;font-weight:600">Nível de gasto</label><input value="{{ d.wealth.gasto }}" data-path="wealth.gasto" onChange="{{ onField }}" style="width:100%;background:var(--c-inset,#f3eee2);border:1px solid var(--c-inset-bd,#dccfb8);border-radius:7px;color:var(--c-text,#2c231b);padding:9px 10px;font-size:13px"></div>
+      </div>
+      <div style="margin-bottom:12px"><label style="display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--c-muted,#786e60);margin-bottom:5px;font-weight:600">Dinheiro em mãos</label><input value="{{ d.wealth.dinheiro }}" data-path="wealth.dinheiro" onChange="{{ onField }}" style="width:100%;background:var(--c-inset,#f3eee2);border:1px solid var(--c-inset-bd,#dccfb8);border-radius:7px;color:var(--c-text,#2c231b);padding:9px 10px;font-size:13px"></div>
+      <div><label style="display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--c-muted,#786e60);margin-bottom:5px;font-weight:600">Ativos & posses de valor</label><textarea value="{{ d.wealth.ativos }}" data-path="wealth.ativos" onChange="{{ onField }}" style="width:100%;min-height:84px;background:var(--c-inset,#f3eee2);border:1px solid var(--c-inset-bd,#dccfb8);border-radius:7px;color:var(--c-text,#2c231b);padding:9px 10px;font-size:13px;line-height:1.5"></textarea></div>
+    </div>
+
+    <div style="background:var(--c-panel,#fdfaf4);border:1px solid var(--c-border,#e6ddca);border-radius:12px;padding:18px">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+        <h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600">Equipamento</h2>
+        <div style="flex:1;height:1px;background:linear-gradient(90deg,var(--c-rule,rgba(158,52,40,.55)),transparent)"></div>
+      </div>
+      <textarea value="{{ d.equipamento }}" data-path="equipamento" onChange="{{ onField }}" placeholder="Itens carregados, ferramentas, lanternas..." style="width:100%;min-height:180px;background:var(--c-inset,#f3eee2);border:1px solid var(--c-inset-bd,#dccfb8);border-radius:7px;color:var(--c-text,#2c231b);padding:11px 12px;font-size:13px;line-height:1.6"></textarea>
+    </div>
+  </section>
+
+  <!-- ANTECEDENTES -->
+  <section style="background:var(--c-panel,#fdfaf4);border:1px solid var(--c-border,#e6ddca);border-radius:12px;padding:18px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+      <h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600">Antecedentes</h2>
+      <div style="flex:1;height:1px;background:linear-gradient(90deg,var(--c-rule,rgba(158,52,40,.55)),transparent)"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px">
+      <sc-for list="{{ bgFields }}" as="b" hint-placeholder-count="9">
+        <div>
+          <label style="display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--c-muted,#786e60);margin-bottom:5px;font-weight:600">{{ b.label }}</label>
+          <textarea value="{{ b.val }}" data-path="{{ b.path }}" onChange="{{ onField }}" style="width:100%;min-height:72px;background:var(--c-inset,#f3eee2);border:1px solid var(--c-inset-bd,#dccfb8);border-radius:7px;color:var(--c-text,#2c231b);padding:9px 10px;font-size:13px;line-height:1.5"></textarea>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- NOTAS -->
+  <section style="background:var(--c-panel,#fdfaf4);border:1px solid var(--c-border,#e6ddca);border-radius:12px;padding:18px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+      <h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600">Anotações</h2>
+      <div style="flex:1;height:1px;background:linear-gradient(90deg,var(--c-rule,rgba(158,52,40,.55)),transparent)"></div>
+    </div>
+    <textarea value="{{ d.notas }}" data-path="notas" onChange="{{ onField }}" placeholder="Pistas, contatos, teorias, sessões..." style="width:100%;min-height:130px;background:var(--c-inset,#f3eee2);border:1px solid var(--c-inset-bd,#dccfb8);border-radius:7px;color:var(--c-text,#2c231b);padding:11px 12px;font-size:13px;line-height:1.6"></textarea>
+  </section>
+
+  <footer style="text-align:center;color:var(--c-place,#b4a894);font-size:11px;padding:10px 0 0;line-height:1.7">
+    Salvamento automático neste navegador · Exporte o JSON para fazer backup ou levar a ficha para outro dispositivo.<br>
+    Call of Cthulhu é uma marca registrada da Chaosium Inc. — ficha não-oficial para uso pessoal.
+  </footer>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const KEY = 'coc_ficha_v1';
+const THEME_DARK = {'--c-page':'#0d0a09','--c-page2':'#241310','--c-panel':'#17110f','--c-border':'#271d19','--c-inset':'#120d0b','--c-inset-bd':'#2e211d','--c-soft':'#150f0d','--c-soft-bd':'#201613','--c-soft-bd2':'#3a221e','--c-pm-bg':'#140f0c','--c-pm-bd':'#3a2d26','--c-pm-label':'#a89a89','--c-text':'#ece3d4','--c-muted':'#8f8578','--c-muted2':'#7d746a','--c-muted3':'#6f665c','--c-faint':'#5f574e','--c-place':'#5c5049','--c-dash':'#4a3a30','--c-accent':'#b8473b','--c-accent-2':'#d98b7f','--c-accent-3':'#cf988d','--c-accent-num':'#efd7cf','--c-accent-btnt':'#e7bdb4','--c-accent-btnbg':'#1c1310','--c-accent-btnbd':'#4a2c27','--c-accent-hov':'#241612','--c-rule':'rgba(184,71,59,.45)','--c-glow':'rgba(184,71,59,.30)','--c-glow2':'rgba(184,71,59,.28)','--c-hp-bg':'#170f0d','--c-hp-bd':'#4a2c26','--c-hp-t':'#db978b','--c-hp-num':'#f2d8d0','--c-hp-btnbd':'#52302a','--c-cklbl':'#b39a8f','--c-gold':'#c9a86a','--c-gold-bd':'#4a4230','--c-gold-num':'#e9dcc0','--c-reset-bg':'#181513','--c-reset-bd':'#3a2b28','--c-reset-t':'#b89a95','--c-reset-hbg':'#2a1c1a','--c-reset-hbd':'#7a4038','--c-reset-ht':'#e6a99f','--c-header-bg':'rgba(18,14,12,.85)'};
+const THEME_LIGHT = {'--c-page':'#f4efe4','--c-page2':'#efe7d7','--c-panel':'#fdfaf4','--c-border':'#e6ddca','--c-inset':'#f3eee2','--c-inset-bd':'#dccfb8','--c-soft':'#f8f3ea','--c-soft-bd':'#e9e1ce','--c-soft-bd2':'#e2d0c2','--c-pm-bg':'#f6f1e7','--c-pm-bd':'#dacdb4','--c-pm-label':'#8a8072','--c-text':'#2c231b','--c-muted':'#786e60','--c-muted2':'#8a8072','--c-muted3':'#978c7c','--c-faint':'#a89d8b','--c-place':'#b4a894','--c-dash':'#ccc0a8','--c-accent':'#9e3428','--c-accent-2':'#9e3428','--c-accent-3':'#9e3428','--c-accent-num':'#7a271d','--c-accent-btnt':'#9e3428','--c-accent-btnbg':'#f8e9e4','--c-accent-btnbd':'#e4c3bb','--c-accent-hov':'#f3ddd6','--c-rule':'rgba(158,52,40,.55)','--c-glow':'rgba(158,52,40,.28)','--c-glow2':'rgba(158,52,40,.26)','--c-hp-bg':'#fceeea','--c-hp-bd':'#e8c8c0','--c-hp-t':'#b0473a','--c-hp-num':'#7c281e','--c-hp-btnbd':'#e4c3bb','--c-cklbl':'#8a7268','--c-gold':'#977629','--c-gold-bd':'#e2d5ae','--c-gold-num':'#6b5420','--c-reset-bg':'#f3eee2','--c-reset-bd':'#ddd0bd','--c-reset-t':'#8a6f68','--c-reset-hbg':'#f0e1db','--c-reset-hbd':'#d4a99f','--c-reset-ht':'#9e3428','--c-header-bg':'rgba(250,246,238,.85)'};
+const ATTRS = [['for','FOR','Força'],['con','CON','Constituição'],['tam','TAM','Tamanho'],['des','DES','Destreza'],['apa','APA','Aparência'],['int','INT','Inteligência'],['pod','POD','Poder'],['edu','EDU','Educação']];
+const BG = [['descricao','Descrição pessoal'],['ideologia','Ideologia & crenças'],['pessoas','Pessoas significativas'],['locais','Locais significativos'],['bens','Bens preciosos'],['tracos','Traços'],['feridas','Ferimentos & cicatrizes'],['fobias','Fobias & manias'],['encontros','Encontros com entidades']];
+const SKILLS = [
+ ['Antropologia',1],['Armas de Fogo (Pistolas)',20],['Armas de Fogo (Rifles/Escopetas)',25],
+ ['Arqueologia',1],['Arremessar',20],['Arte/Criação',5],['Chaveiro',1],['Ciência',1],
+ ['Contabilidade',5],['Crédito',0],['Dirigir',20],['Disfarces',5],['Encontrar',25],
+ ['Escalar',20],['Esconder',20],['Escutar',25],['Esquiva',0,'dodge'],['Estimar',5],
+ ['História',5],['Intimidar',15],['Lábia',5],['Leis',5],['Língua (Materna)',0,'edu'],
+ ['Língua (Outra)',1],['Lutar (Brigar)',25],['Medicina',1],['Mitologia Cthulhu',0,'mitologia'],
+ ['Mundo Natural',10],['Nadar',20],['Navegação',10],['Ocultismo',5],['Op. Máq. Pesadas',1],
+ ['Persuadir',10],['Pilotar',1],['Prestidigitação',10],['Primeiros Socorros',30],
+ ['Psicanálise',1],['Psicologia',10],['Rastrear',10],['Rep. Elétricos',10],['Rep. Mecânicos',10],
+ ['Saltar',20],['Sedução',15],['Sobrevivência',10],['Usar Bibliotecas',20],['Usar Eletrônicos',1]
+];
+function makeSkills(){
+  return SKILLS.map((s,i)=>{
+    const nome=s[0], base=s[1], tag=s[2];
+    let id='sk'+i, auto=null;
+    if(tag==='dodge') auto='dodge';
+    else if(tag==='edu') auto='edu';
+    else if(tag==='mitologia') id='mitologia';
+    return {id, nome, base, valor:'', occ:false, custom:false, auto};
+  });
+}
+function makeDefault(){
+  return {
+    meta:{nome:'',jogador:'',ocupacao:'',idade:'',sexo:'',residencia:'',cidadeNatal:''},
+    portrait:'',
+    attrs:{for:'',con:'',tam:'',des:'',apa:'',int:'',pod:'',edu:''},
+    status:{pvAtual:'',sanAtual:'',pmAtual:'',sorte:''},
+    states:{grave:false,morrendo:false,tempInsano:false,indefInsano:false},
+    points:{occ:'',int:''},
+    skills:makeSkills(),
+    weapons:[{nome:'Desarmado',hab:'',dano:'1d3+BD',alcance:'—',ataques:'1',municao:'—',malf:'—'}],
+    wealth:{gasto:'',dinheiro:'',ativos:''},
+    bg:{descricao:'',ideologia:'',pessoas:'',locais:'',bens:'',tracos:'',feridas:'',fobias:'',encontros:''},
+    equipamento:'',
+    notas:''
+  };
+}
+
+class Component extends DCLogic {
+  state = { data: makeDefault(), theme: 'claro', showPoints: true };
+  dragIdx = null;
+
+  componentDidMount(){
+    try { const raw = localStorage.getItem(KEY); if(raw) this.setState({ data: this.migrate(JSON.parse(raw)) }); } catch(e){}
+    let theme = 'claro';
+    try { const t = localStorage.getItem('coc_tema'); if(t==='escuro'||t==='claro') theme = t; } catch(e){}
+    let showPoints = true;
+    try { if(localStorage.getItem('coc_pts')==='0') showPoints = false; } catch(e){}
+    this.setState({ theme, showPoints }, () => this.applyTheme(theme));
+  }
+  rootRef = (el) => { this.rootEl = el; if(el) this.applyTheme(this.state.theme); };
+  applyTheme = (theme) => { const el = this.rootEl; if(!el) return; const m = theme==='escuro' ? THEME_DARK : THEME_LIGHT; for(const k in m) el.style.setProperty(k, m[k]); try{ document.body.style.background = m['--c-page']; }catch(e){} };
+  toggleTheme = () => { const t = this.state.theme==='escuro' ? 'claro' : 'escuro'; this.setState({ theme:t }, () => this.applyTheme(t)); try{ localStorage.setItem('coc_tema', t); }catch(e){} };
+  togglePoints = () => { const v = !this.state.showPoints; this.setState({ showPoints:v }); try{ localStorage.setItem('coc_pts', v?'1':'0'); }catch(e){} };
+  onSkillDragStart = (e) => { this.dragIdx = +e.currentTarget.getAttribute('data-idx'); if(e.dataTransfer){ e.dataTransfer.effectAllowed='move'; try{ e.dataTransfer.setData('text/plain', String(this.dragIdx)); }catch(_){} } };
+  onSkillDragOver = (e) => { e.preventDefault(); if(e.dataTransfer) e.dataTransfer.dropEffect='move'; };
+  onSkillDrop = (e) => { e.preventDefault(); const to = +e.currentTarget.getAttribute('data-idx'); const from = this.dragIdx; if(from==null || isNaN(from) || from===to) return; this.setState(prev => { const data = structuredClone(prev.data); const [it] = data.skills.splice(from,1); data.skills.splice(to,0,it); return { data }; }, this.save); this.dragIdx = null; };
+  save = () => { try { localStorage.setItem(KEY, JSON.stringify(this.state.data)); } catch(e){} };
+
+  setField = (path, val) => {
+    this.setState(prev => {
+      const data = structuredClone(prev.data);
+      const ks = path.split('.');
+      let o = data;
+      for (let i=0;i<ks.length-1;i++) o = o[ks[i]];
+      o[ks[ks.length-1]] = val;
+      return { data };
+    }, this.save);
+  };
+  onField = (e) => this.setField(e.currentTarget.getAttribute('data-path'), e.currentTarget.value);
+  onToggle = (e) => this.setField(e.currentTarget.getAttribute('data-path'), e.currentTarget.checked);
+  step = (e) => {
+    const b = e.currentTarget;
+    const cur = parseInt(b.getAttribute('data-cur')) || 0;
+    const d = parseInt(b.getAttribute('data-delta')) || 0;
+    const maxA = b.getAttribute('data-max');
+    let n = cur + d;
+    if (n < 0) n = 0;
+    if (maxA !== null && maxA !== '' && n > parseInt(maxA)) n = parseInt(maxA);
+    this.setField(b.getAttribute('data-path'), String(n));
+  };
+  toggleOcc = (e) => { const i = +e.currentTarget.getAttribute('data-idx'); this.setField('skills.'+i+'.occ', !this.state.data.skills[i].occ); };
+  addSkill = () => this.setState(prev => { const data = structuredClone(prev.data); data.skills.push({id:'c'+Date.now(),nome:'',base:0,valor:'',occ:false,custom:true,auto:null}); return { data }; }, this.save);
+  delSkill = (e) => { const i = +e.currentTarget.getAttribute('data-idx'); this.setState(prev => { const data = structuredClone(prev.data); data.skills.splice(i,1); return { data }; }, this.save); };
+  addWeapon = () => this.setState(prev => { const data = structuredClone(prev.data); data.weapons.push({nome:'',hab:'',dano:'',alcance:'',ataques:'',municao:'',malf:''}); return { data }; }, this.save);
+  delWeapon = (e) => { const i = +e.currentTarget.getAttribute('data-idx'); this.setState(prev => { const data = structuredClone(prev.data); data.weapons.splice(i,1); return { data }; }, this.save); };
+  onPortrait = (e) => { const f = e.currentTarget.files[0]; if(!f) return; const inp = e.currentTarget; const r = new FileReader(); r.onload = () => { this.setField('portrait', r.result); inp.value=''; }; r.readAsDataURL(f); };
+  clearPortrait = () => this.setField('portrait','');
+  exportJSON = () => {
+    const blob = new Blob([JSON.stringify(this.state.data,null,2)], {type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    let nome = (this.state.data.meta.nome||'investigador').trim().replace(/[^\wÀ-ÿ \-]+/g,'').replace(/\s+/g,'_');
+    if(!nome) nome = 'investigador';
+    a.download = 'ficha-'+nome+'.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  };
+  importJSON = (e) => {
+    const f = e.currentTarget.files[0]; if(!f) return; const inp = e.currentTarget;
+    const r = new FileReader();
+    r.onload = () => { try { const d = JSON.parse(r.result); this.setState({ data: this.migrate(d) }, this.save); } catch(err){ alert('Arquivo JSON inválido.'); } inp.value=''; };
+    r.readAsText(f);
+  };
+  resetSheet = () => { if(confirm('Criar uma ficha nova? Os dados atuais serão apagados — exporte antes se quiser guardar.')) this.setState({ data: makeDefault() }, this.save); };
+  migrate(d){
+    const def = makeDefault();
+    const m = (a,b) => ({ ...a, ...(b||{}) });
+    return {
+      meta: m(def.meta, d.meta),
+      portrait: d.portrait || '',
+      attrs: m(def.attrs, d.attrs),
+      status: m(def.status, d.status),
+      states: m(def.states, d.states),
+      points: m(def.points, d.points),
+      skills: Array.isArray(d.skills) && d.skills.length ? d.skills.map(s => ({ occ:false, custom:false, auto:null, valor:'', base:0, ...s })) : def.skills,
+      weapons: Array.isArray(d.weapons) ? d.weapons : def.weapons,
+      wealth: m(def.wealth, d.wealth),
+      bg: m(def.bg, d.bg),
+      equipamento: d.equipamento || '',
+      notas: d.notas || ''
+    };
+  }
+
+  renderVals(){
+    const d = this.state.data;
+    const P = v => parseInt(v) || 0;
+    const A = {}; ATTRS.forEach(a => A[a[0]] = P(d.attrs[a[0]]));
+    const half = v => Math.floor(v/2), fifth = v => Math.floor(v/5);
+
+    const attrRows = ATTRS.map(a => { const val = A[a[0]]; return { k:a[0], abbr:a[1], full:a[2], path:'attrs.'+a[0], raw:d.attrs[a[0]], val, half:half(val), fifth:fifth(val) }; });
+
+    let mythos = 0;
+    d.skills.forEach(s => { if(s.id==='mitologia'){ mythos = (s.valor===''||s.valor==null) ? P(s.base) : P(s.valor); } });
+
+    const pvMax = Math.floor((A.con + A.tam)/10);
+    const pmMax = Math.floor(A.pod/5);
+    const sanMax = 99 - mythos;
+    const sanIni = A.pod;
+    const dodge = Math.floor(A.des/2);
+
+    const sum = A.for + A.tam;
+    let dbText = '—', build = '—', buildDisp = '—';
+    if(sum > 0){
+      if(sum<=64){ dbText='−2'; build=-2; }
+      else if(sum<=84){ dbText='−1'; build=-1; }
+      else if(sum<=124){ dbText='0'; build=0; }
+      else if(sum<=164){ dbText='+1d4'; build=1; }
+      else if(sum<=204){ dbText='+1d6'; build=2; }
+      else { const ex = Math.floor((sum-125)/80); dbText='+'+(1+ex)+'d6'; build=2+ex; }
+      buildDisp = build>0 ? '+'+build : String(build);
+    }
+
+    let mov = '—';
+    if(A.tam > 0){
+      let mv = 8;
+      if(A.for < A.tam && A.des < A.tam) mv = 7;
+      else if(A.for > A.tam && A.des > A.tam) mv = 9;
+      const age = P(d.meta.idade);
+      if(age>=80) mv-=5; else if(age>=70) mv-=4; else if(age>=60) mv-=3; else if(age>=50) mv-=2; else if(age>=40) mv-=1;
+      mov = mv;
+    }
+
+    const pvCur = d.status.pvAtual==='' ? pvMax : P(d.status.pvAtual);
+    const pmCur = d.status.pmAtual==='' ? pmMax : P(d.status.pmAtual);
+    const sanCur = d.status.sanAtual==='' ? sanIni : P(d.status.sanAtual);
+    const sorteCur = P(d.status.sorte);
+
+    let occSpent = 0, intSpent = 0, credito = 0;
+    const skillRows = d.skills.map((s,i) => {
+      let base = P(s.base);
+      if(s.auto==='dodge') base = dodge;
+      if(s.auto==='edu') base = A.edu;
+      const ev = (s.valor===''||s.valor==null) ? base : P(s.valor);
+      const sp = Math.max(0, ev - base);
+      if(s.occ) occSpent += sp; else intSpent += sp;
+      if(s.nome === 'Crédito') credito = ev;
+      return { i, id:s.id, nome:s.nome, base, valorRaw:s.valor==null?'':s.valor, ev, half:half(ev), fifth:fifth(ev), occ:s.occ, custom:s.custom, occDot: s.occ?'var(--c-accent,#9e3428)':'transparent', occBorder: s.occ?'var(--c-accent,#9e3428)':'var(--c-dash,#ccc0a8)' };
+    });
+
+    const eduHint = A.edu*4, intHint = A.int*2;
+    const occAvail = d.points.occ==='' ? eduHint : P(d.points.occ);
+    const intAvail = d.points.int==='' ? intHint : P(d.points.int);
+    const occRem = occAvail - occSpent, intRem = intAvail - intSpent;
+
+    const bgFields = BG.map(b => ({ key:b[0], label:b[1], path:'bg.'+b[0], val:d.bg[b[0]] }));
+    const weaponRows = d.weapons.map((w,i) => ({ ...w, i }));
+
+    return {
+      d,
+      hasPortrait: !!d.portrait,
+      notPortrait: !d.portrait,
+      portraitImg: d.portrait ? React.createElement('img', { src: d.portrait, alt: 'retrato', style: { position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover' } }) : null,
+      attrRows, skillRows, weaponRows, bgFields,
+      mov, dbText, buildDisp, dodge, mythos, credito,
+      pv:{ cur:pvCur, max:pvMax },
+      pm:{ cur:pmCur, max:pmMax },
+      san:{ cur:sanCur, max:sanMax, ini:sanIni },
+      sorteCur,
+      points:{
+        occSpent, occRem, intSpent, intRem, eduHint, intHint,
+        occRemColor: occRem<0 ? '#cf5a49' : 'var(--c-accent-3,#9e3428)',
+        intRemColor: intRem<0 ? '#cf5a49' : 'var(--c-gold,#977629)'
+      },
+      theme:this.state.theme, showPoints:this.state.showPoints,
+      themeLabel: this.state.theme==='escuro' ? '☀ Claro' : '☾ Escuro',
+      pointsLabel: this.state.showPoints ? 'Ocultar contadores' : 'Mostrar contadores',
+      rootRef:this.rootRef, toggleTheme:this.toggleTheme, togglePoints:this.togglePoints,
+      onSkillDragStart:this.onSkillDragStart, onSkillDragOver:this.onSkillDragOver, onSkillDrop:this.onSkillDrop,
+      onField:this.onField, onToggle:this.onToggle, step:this.step, toggleOcc:this.toggleOcc,
+      addSkill:this.addSkill, delSkill:this.delSkill, addWeapon:this.addWeapon, delWeapon:this.delWeapon,
+      onPortrait:this.onPortrait, clearPortrait:this.clearPortrait,
+      exportJSON:this.exportJSON, importJSON:this.importJSON, resetSheet:this.resetSheet
+    };
+  }
+}
+</script>
+</body>
+</html>
